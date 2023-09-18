@@ -1,0 +1,5 @@
+=====
+ root_dir :  dev_outputs/simgcd
+Experiment saved to: dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)
+['simgcd']
+Namespace(batch_size=256, num_workers=8, eval_funcs=['v2'], warmup_model_dir='/conor/SimGCD-ICCV-Challenge/dev_outputs/simgcd/log/aircraft_simgcd_(07.09.2023_|_33.607)/checkpoints/model.pt', dataset_name='aircraft', prop_train_labels=0.5, use_ssb_splits=True, grad_from_block=10, lr=0.001, gamma=0.1, momentum=0.9, weight_decay=5e-05, epochs=200, exp_root='dev_outputs', transform='imagenet', sup_weight=0.35, n_views=2, memax_weight=1.0, warmup_teacher_temp=0.07, teacher_temp=0.04, warmup_teacher_temp_epochs=30, fp16=False, print_freq=10, exp_name='aircraft_simgcd', head_type=None, logger=<loguru.logger handlers=[(id=0, level=10, sink=<stderr>), (id=1, level=10, sink='dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)/log.txt')]>, log_dir='dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)', model_dir='dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)/checkpoints', model_path='dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)/checkpoints/model.pt')
