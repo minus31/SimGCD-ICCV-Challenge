@@ -11,7 +11,6 @@ l_r=0.001
 model_aircraft='/conor/SimGCD-ICCV-Challenge/dev_outputs/simgcd/log/aircraft_simgcd_(14.09.2023_|_32.896)/checkpoints/model.pt'
 model_cub='/conor/SimGCD-ICCV-Challenge/dev_outputs/simgcd/log/cub_simgcd_(14.09.2023_|_32.878)/checkpoints/model.pt'
 model_scars='/conor/SimGCD-ICCV-Challenge/dev_outputs/simgcd/log/scars_simgcd_(14.09.2023_|_32.878)/checkpoints/model.pt'
-
 #cub 
 CUDA_VISIBLE_DEVICES=0 python train_xcit.py \
     --dataset_name 'cub' \

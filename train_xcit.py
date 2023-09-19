@@ -63,7 +63,8 @@ def train(student, train_loader, test_loader, unlabelled_train_loader, args):
 
     update_cnt = 0
     max_all_acc = 0.
-
+    classification_weight = 0
+    no_cls_loss_epochs = 0 
     
     for epoch in range(args.epochs):
         loss_record = AverageMeter()
@@ -111,10 +112,18 @@ def train(student, train_loader, test_loader, unlabelled_train_loader, args):
                 pstr += f'contrastive_loss: {contrastive_loss.item():.4f} '
 
                 loss = 0
-                loss += (1 - args.sup_weight) * cluster_loss + args.sup_weight * cls_loss
+                
+                loss += classification_weight * ((1 - args.sup_weight) * cluster_loss + args.sup_weight * cls_loss)
                 # loss += 1.5 * ((1 - args.sup_weight) * cluster_loss + args.sup_weight * cls_loss)
                 loss += (1 - args.sup_weight) * contrastive_loss + args.sup_weight * sup_con_loss
-                
+            
+            
+            no_cls_loss_epochs += 1
+            if not no_cls_loss_epochs < 30:
+                classification_weight = 1
+            else: 
+                classification_weight = 0
+
             # Train acc
             loss_record.update(loss.item(), class_labels.size(0))
             optimizer.zero_grad()
@@ -157,8 +166,9 @@ def train(student, train_loader, test_loader, unlabelled_train_loader, args):
             with open(os.path.dirname(os.path.dirname(args.model_path)) + "/stat_{}.txt".format(args.dataset_name), 'w') as f: 
                 f.write('epochs: {} \nTrain Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(epoch, all_acc, old_acc, new_acc))
 
-        if update_cnt > 190:
+        if update_cnt > 50:
             print("[ EARLY STOP THE SCORE HAS NOT CHANEGE OVER 100 EPOCHS ]")
+            no_cls_loss_epochs = 0
             break
             
             
@@ -280,11 +290,7 @@ if __name__ == "__main__":
     # ---------------------
     # FINAL MODEL
     # ---------------------
-    if args.head_type == "custom":
-        projector = CustomDINOHead(in_dim=args.feat_dim, out_dim=args.mlp_out_dim, nlayers=args.num_mlp_layers)
-        
-    else: 
-        projector = DINOHead(in_dim=args.feat_dim, out_dim=args.mlp_out_dim, nlayers=args.num_mlp_layers)
+    projector = DINOHead(in_dim=args.feat_dim, out_dim=args.mlp_out_dim, nlayers=args.num_mlp_layers)
         
     model = nn.Sequential(backbone, projector)
     

@@ -1,5 +1,94 @@
 =====
  root_dir :  dev_outputs/simgcd
-Experiment saved to: dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)
+Experiment saved to: dev_outputs/simgcd/log/aircraft_simgcd_(19.09.2023_|_17.317)
 ['simgcd']
-Namespace(batch_size=256, num_workers=8, eval_funcs=['v2'], warmup_model_dir='/conor/SimGCD-ICCV-Challenge/dev_outputs/simgcd/log/aircraft_simgcd_(07.09.2023_|_33.607)/checkpoints/model.pt', dataset_name='aircraft', prop_train_labels=0.5, use_ssb_splits=True, grad_from_block=10, lr=0.001, gamma=0.1, momentum=0.9, weight_decay=5e-05, epochs=200, exp_root='dev_outputs', transform='imagenet', sup_weight=0.35, n_views=2, memax_weight=1.0, warmup_teacher_temp=0.07, teacher_temp=0.04, warmup_teacher_temp_epochs=30, fp16=False, print_freq=10, exp_name='aircraft_simgcd', head_type=None, logger=<loguru.logger handlers=[(id=0, level=10, sink=<stderr>), (id=1, level=10, sink='dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)/log.txt')]>, log_dir='dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)', model_dir='dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)/checkpoints', model_path='dev_outputs/simgcd/log/aircraft_simgcd_(15.09.2023_|_58.832)/checkpoints/model.pt')
+Namespace(batch_size=128, num_workers=8, eval_funcs=['v2'], warmup_model_dir='/conor/SimGCD-ICCV-Challenge/dev_outputs/simgcd/log/aircraft_simgcd_(14.09.2023_|_32.896)/checkpoints/model.pt', dataset_name='aircraft', prop_train_labels=0.5, use_ssb_splits=True, grad_from_block=23, lr=0.001, gamma=0.1, momentum=0.9, weight_decay=5e-05, epochs=200, exp_root='dev_outputs', transform='imagenet', sup_weight=0.35, rep_weight=None, n_views=2, memax_weight=1.0, warmup_teacher_temp=0.07, teacher_temp=0.04, warmup_teacher_temp_epochs=30, fp16=False, print_freq=10, exp_name='aircraft_simgcd', logger=<loguru.logger handlers=[(id=0, level=10, sink=<stderr>), (id=1, level=10, sink='dev_outputs/simgcd/log/aircraft_simgcd_(19.09.2023_|_17.317)/log.txt')]>, log_dir='dev_outputs/simgcd/log/aircraft_simgcd_(19.09.2023_|_17.317)', model_dir='dev_outputs/simgcd/log/aircraft_simgcd_(19.09.2023_|_17.317)/checkpoints', model_path='dev_outputs/simgcd/log/aircraft_simgcd_(19.09.2023_|_17.317)/checkpoints/model.pt')
+==== MODEL SPEC ====
+Sequential(
+  (0): XCiT(
+    (patch_embed): ConvPatchEmbed(
+      (proj): Sequential(
+        (0): Sequential(
+          (0): Conv2d(3, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (1): SyncBatchNorm(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (1): GELU(approximate='none')
+        (2): Sequential(
+          (0): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (1): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (3): GELU(approximate='none')
+        (4): Sequential(
+          (0): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (pos_drop): Dropout(p=0.0, inplace=False)
+    (blocks): ModuleList(
+      (0-23): 24 x XCABlock(
+        (norm1): LayerNorm((512,), eps=1e-06, elementwise_affine=True)
+        (attn): XCA(
+          (qkv): Linear(in_features=512, out_features=1536, bias=True)
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=512, out_features=512, bias=True)
+          (proj_drop): Dropout(p=0.0, inplace=False)
+        )
+        (drop_path): Identity()
+        (norm2): LayerNorm((512,), eps=1e-06, elementwise_affine=True)
+        (mlp): Mlp(
+          (fc1): Linear(in_features=512, out_features=2048, bias=True)
+          (act): GELU(approximate='none')
+          (drop1): Dropout(p=0.0, inplace=False)
+          (norm): Identity()
+          (fc2): Linear(in_features=2048, out_features=512, bias=True)
+          (drop2): Dropout(p=0.0, inplace=False)
+        )
+        (norm3): LayerNorm((512,), eps=1e-06, elementwise_affine=True)
+        (local_mp): LPI(
+          (conv1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512)
+          (act): GELU(approximate='none')
+          (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512)
+        )
+      )
+    )
+    (cls_attn_blocks): ModuleList(
+      (0-1): 2 x ClassAttentionBlock(
+        (norm1): LayerNorm((512,), eps=1e-06, elementwise_affine=True)
+        (attn): ClassAttention(
+          (qkv): Linear(in_features=512, out_features=1536, bias=True)
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=512, out_features=512, bias=True)
+          (proj_drop): Dropout(p=0.0, inplace=False)
+        )
+        (drop_path): Identity()
+        (norm2): LayerNorm((512,), eps=1e-06, elementwise_affine=True)
+        (mlp): Mlp(
+          (fc1): Linear(in_features=512, out_features=2048, bias=True)
+          (act): GELU(approximate='none')
+          (drop1): Dropout(p=0.0, inplace=False)
+          (norm): Identity()
+          (fc2): Linear(in_features=2048, out_features=512, bias=True)
+          (drop2): Dropout(p=0.0, inplace=False)
+        )
+      )
+    )
+    (norm): LayerNorm((512,), eps=1e-06, elementwise_affine=True)
+    (head): Identity()
+    (pos_embeder): PositionalEncodingFourier(
+      (token_projection): Conv2d(64, 512, kernel_size=(1, 1), stride=(1, 1))
+    )
+  )
+  (1): DINOHead(
+    (mlp): Sequential(
+      (0): Linear(in_features=512, out_features=2048, bias=True)
+      (1): GELU(approximate='none')
+      (2): Linear(in_features=2048, out_features=2048, bias=True)
+      (3): GELU(approximate='none')
+      (4): Linear(in_features=2048, out_features=256, bias=True)
+    )
+    (last_layer): Linear(in_features=512, out_features=100, bias=False)
+  )
+)
+====================
